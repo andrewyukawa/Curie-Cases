@@ -4,9 +4,19 @@ import os
 
 app = Flask(__name__)
 
-# Initialize database
-if not os.path.exists('curie.db'):
-    db.init_db()
+# Initialize database based on environment
+print("Starting application initialization...")
+
+# For Vercel, check if we're in production
+if os.environ.get('VERCEL_REGION'):
+    print("Vercel environment detected, initializing in-memory database")
+    # Use in-memory data for Vercel
+    db.init_memory_db()
+else:
+    print("Local environment detected, using SQLite database")
+    # Use SQLite for local development
+    if not os.path.exists('curie.db'):
+        db.init_db()
 
 @app.route('/')
 def home():
